@@ -80,7 +80,7 @@ base_image_tags() {
   if [[ "$version" != *-* ]]; then
     tags=("${tags[@]}" latest)
   fi
-  for tag in "$tags"; do
+  for tag in "${tags[@]}"; do
     echo $image:${base_image//:/}-$tag
     if [[ "$base_image" == "$default_image" ]]; then echo $image:$tag; fi
   done
