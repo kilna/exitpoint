@@ -91,7 +91,7 @@ docker_release() {
   build
   docker_install_pushrm
   for base_image in "${base_images[@]}" ; do
-    for tag in $(base_image_tags "$base_images"); do
+    for tag in $(base_image_tags "$base_image"); do
       run docker buildx imagetools create --tag $tag $image:$base_image-build
     done
   done
