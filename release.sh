@@ -41,7 +41,7 @@ check_git_status() {
 
 build() {
   for base_image in "${base_images[@]}"; do
-    build_tag=$image:${base_image//:/}-build
+    build_tag=$image:${base_image//:/-}-build
     run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
       --progress plain --platform $platforms --push
     run docker pull $build_tag
@@ -81,7 +81,7 @@ base_image_tags() {
     tags=("${tags[@]}" latest)
   fi
   for tag in "${tags[@]}"; do
-    echo $image:$tag-${base_image//:/}
+    echo $image:$tag-${base_image//:/-}
     if [[ "$base_image" == "$default_image" ]]; then echo $image:$tag; fi
   done
 }
@@ -93,7 +93,7 @@ docker_release() {
   for base_image in "${base_images[@]}" ; do
     for tag in $(base_image_tags "$base_image"); do
       run docker buildx imagetools create --tag $tag \
-        $image:${base_image//:/}-build
+        $image:${base_image//:/-}-build
     done
   done
   if [[ "$version" != *-* ]]; then
