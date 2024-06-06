@@ -14,7 +14,7 @@ ENV EXITPOINT=/exitpoint.sh
 # Set to a value if you want to run your own entrypoint in a derived container
 ENV ENTRYPOINT=''
 
-ENTRYPOINT /exitpoint-entrypoint.sh
+ENTRYPOINT [ "/exitpoint-entrypoint.sh" ]
 
 CMD []
 
