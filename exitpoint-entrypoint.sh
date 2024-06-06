@@ -8,7 +8,7 @@ export EXITPOINT="${EXITPOINT:-/exitpoint.sh}"
 exitpoint() {
   echo "$EXITPOINT triggered on signal $1" >&2
   exec 3<&- || true; # Close fifo
-  rm -rf $tmpdir || true # Cleanup temp dir
+  [ "${tmpdir:-}" != "" ] && rm -rf $tmpdir || true # Cleanup temp dir
   [ "${PID:-}" != "" ] && ps $PID >/dev/null && kill -s $1
   exec "$EXITPOINT"
 }
