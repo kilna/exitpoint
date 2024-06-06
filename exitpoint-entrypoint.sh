@@ -14,7 +14,7 @@ exitpoint() {
 }
 
 for sig in SIGHUP SIGINT SIGQUIT SIGTERM; do
-  trap "exitpoint $sig" $sig
+  trap "exitpoint $sig" $sig tail
 done
 
 # Run docker CMD as passed into entrypoint
@@ -27,10 +27,12 @@ while [ $# -gt 0 ]; do case "$1" in
   *)          break;;
 esac; shift; done
 
+# Prefix a custom derived-container entrypoint if provided as env var
 if [ "${ENTRYPOINT:-}" != '' ]; then
   set -- "${ENTRYPOINT}" "$@"
 fi
 
+# Run the command...
 if [ $# -gt 0 ]; then
   if [ $background -gt 0 ] || [ $wait -gt 0 ]; then
     "$@" &
@@ -40,14 +42,20 @@ if [ $# -gt 0 ]; then
     export CMD_EXIT=$?
   fi
 else
+  # We had no command to run, just pretend we had success
   CMD_EXIT=0
 fi
 
+# Now we wait...
+
 if [ $wait -gt 0 ]; then
+  # Wait for the backgrounded process if that's how we're configured...
   wait $PID
   export CMD_EXIT=$?
   exec "$EXITPOINT"
 fi
+
+# Otherwise wait for a signal.
 
 # Inspired by: https://unix.stackexchange.com/questions/68236/avoiding-busy-waiting-in-bash-without-the-sleep-command
 

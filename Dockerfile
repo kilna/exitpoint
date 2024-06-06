@@ -8,13 +8,18 @@ COPY exitpoint-entrypoint.sh /
 
 RUN chmod +x /exitpoint*.sh
 
-# Set to another path if you want a different exitpoint location
-ENV EXITPOINT=/exitpoint.sh
-
-# Set to a value if you want to run your own entrypoint in a derived container
-ENV ENTRYPOINT=''
-
 ENTRYPOINT [ "/exitpoint-entrypoint.sh" ]
 
+# Set to another path if you want a different exitpoint location in your
+# derived container
+ENV EXITPOINT=/exitpoint.sh
+
+# Set to a valid script if you want to run your own entrypoint in a
+# derived container; /exitpoint-entrypoint.sh will in turn call this entrypoint
+ENV ENTRYPOINT=''
+
+# Default of no initial command to run; only the exitpoint will be executed
+# Set CMD in your derived container (with optional --wait or --background
+# prefix) in order to run a command at start of the container too.
 CMD []
 
