@@ -21,9 +21,10 @@ done
 background=0
 wait=0
 while [ $# -gt 0 ]; do case "$1" in
-  --bg|-b)   background=1;;
-  --wait|-w) wait=1;;
-  *)         break;;
+  --bg|-b)    background=1;;
+  --wait|-w)  wait=1;;
+  --debug|-d) set -x;;
+  *)          break;;
 esac; shift; done
 
 if [ "${ENTRYPOINT:-}" != '' ]; then

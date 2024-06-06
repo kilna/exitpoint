@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export image='kilna/exitpoint'
-export short_desc='A container image to run one command on start, and another upon termination'
+export short_desc='A container to run an exitpoint.sh script upon termination'
 export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
 export base_images=(busybox:musl busybox:glibc busybox:uclibc busybox alpine)
 export default_image=alpine
