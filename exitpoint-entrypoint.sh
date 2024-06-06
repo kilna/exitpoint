@@ -20,6 +20,7 @@ done
 # Run docker CMD as passed into entrypoint
 background=0
 wait=0
+echo ARGS: "$@"
 while [ $# -gt 0 ]; do case "$1" in
   --bg|-b)    background=1;;
   --wait|-w)  wait=1;;
