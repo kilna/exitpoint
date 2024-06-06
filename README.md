@@ -1,6 +1,6 @@
 # exitpoint
 
-**A container image to run one command on start, and another upon termination**
+**A container image to run an exitpoint.sh script upon termination**
 
 [![DockerHub kilna/exitpoint](https://img.shields.io/badge/DockerHub-kilna/exitpoint-blue?logo=docker)](https://hub.docker.com/r/kilna/exitpoint)
 [![Docker Image Version](https://img.shields.io/docker/v/kilna/exitpoint?sort=semver)](https://hub.docker.com/r/kilna/exitpoint)
@@ -21,6 +21,9 @@ This image is meant primarily to be a base image that will be derived from,
 an example Dockerfile.
 
 ### Examples
+
+For an example of running nothing on start, and exitpoint script on termination
+see [examples/exit-only](examples/exit-only).
 
 For an example of a synchronous (not backgrounded) command run on start, with
 an exitpoint script see [examples/synchronous](examples/synchronous).

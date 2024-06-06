@@ -2,6 +2,21 @@
 
 set -u -e
 
+# Set EXITPOINT to /exitpoint.sh if not already set
+export EXITPOINT="${EXITPOINT:-/exitpoint.sh}"
+
+exitpoint() {
+  echo "$EXITPOINT triggered on signal $1" >&2
+  exec 3<&- || true; # Close fifo
+  rm -rf $tmpdir || true # Cleanup temp dir
+  [ "${PID:-}" != "" ] && ps $PID >/dev/null && kill -s $1
+  exec "$EXITPOINT"
+}
+
+for sig in SIGHUP SIGINT SIGQUIT SIGTERM; do
+  trap "exitpoint $sig" $sig
+done
+
 # Run docker CMD as passed into entrypoint
 background=0
 wait=0
@@ -26,21 +41,6 @@ if [ $# -gt 0 ]; then
 else
   CMD_EXIT=0
 fi
-
-# Set EXITPOINT to /exitpoint.sh if not already set
-export EXITPOINT="${EXITPOINT:-/exitpoint.sh}"
-
-exitpoint() {
-  echo "$EXITPOINT triggered on signal $1" >&2
-  exec 3<&- || true; # Close fifo
-  rm -rf $tmpdir || true # Cleanup temp dir
-  [ "${PID:-}" != "" ] && ps $PID >/dev/null && kill -s $1
-  exec "$EXITPOINT"
-}
-
-for sig in SIGHUP SIGINT SIGQUIT SIGTERM; do
-  trap "exitpoint $sig" $sig
-done
 
 if [ $wait -gt 0 ]; then
   wait $PID
