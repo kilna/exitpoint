@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -u -e
+set -u -e -x
 
 # Set EXITPOINT to /exitpoint.sh if not already set
 export EXITPOINT="${EXITPOINT:-/exitpoint.sh}"
