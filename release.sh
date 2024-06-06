@@ -41,7 +41,7 @@ check_git_status() {
 
 build() {
   for base_image in "${base_images[@]}"; do
-    build_tag=$image:$base_image-build
+    build_tag=$image:${base_image//:/}-build
     run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
       --progress plain --platform $platforms --push
     run docker pull $build_tag
@@ -92,7 +92,8 @@ docker_release() {
   docker_install_pushrm
   for base_image in "${base_images[@]}" ; do
     for tag in $(base_image_tags "$base_image"); do
-      run docker buildx imagetools create --tag $tag $image:$base_image-build
+      run docker buildx imagetools create --tag $tag \
+        $image:${base_image//:/}-build
     done
   done
   if [[ "$version" != *-* ]]; then
