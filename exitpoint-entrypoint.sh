@@ -14,7 +14,7 @@ exitpoint() {
 }
 
 for sig in SIGHUP SIGINT SIGQUIT SIGTERM; do
-  trap "exitpoint $sig" $sig tail
+  trap "exitpoint $sig" $sig
 done
 
 # Run docker CMD as passed into entrypoint
