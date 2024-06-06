@@ -3,7 +3,7 @@
 export image='kilna/exitpoint'
 export short_desc='A container image to run one command on start, and another upon termination'
 export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
-export base_images=(busybox alpine)
+export base_images=(busybox:musl busybox:glibc busybox:uclibc busybox alpine)
 export default_image=alpine
 export ver_regex='v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?'
 export git_branch=$(git branch | grep -F '*' | cut -f2- -d' ')
