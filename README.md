@@ -34,22 +34,12 @@ the exit, see [examples/wait](examples/wait).
 For an example of a backgrounded process that we don't care about the exit,
 see [examples/background](examples/background).
 
-### CMD options
-
-You can prefix your docker CMD with the following to determine how the command
-will be run:
-
-* `--bg` or `-b` - Run the command in the background, ignore its exit with
-  regard to triggering exitpoint.
-* `--wait` or `-w` - Run the command in the background, and if it exits before
-  receiving a signal to the container, trigger the exitpoint.
-
 ### Variables
 
 * `EXITPOINT` - Sets the path of the exitpoint script. Defaults to
   `/exitpoint.sh`.
-* `ENTRYPOINT` - An optional entrypoint script to run (in addition to
-  `/exitpoint-entrypoint.sh` which sets up the exit point).
+* `ENTRYPOINT` - An optional entrypoint script to run by the base image's
+   entrypoint script `/exitpoint-entrypoint.sh`.
 * `CMD_EXIT` - Is available to the exitpoint script, and contains the exit code
   as returned from the entrypoint + docker CMD.
 
