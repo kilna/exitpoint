@@ -45,12 +45,9 @@ build() {
     alias="$(echo "$base_image" | cut -d= -f1)"
     base_image="$(echo "$base_image" | rev | cut -d= -f1 | rev)"
     build_tag=$image:${alias//:/-}-build
-    #run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
-    #  --progress plain --platform $platforms --push
     docker buildx create --name $builder --bootstrap --use || true
     run docker build . -t $build_tag --build-arg base_image=$base_image \
       --progress plain --platform $platforms --builder $builder
-    #run docker pull $build_tag
   done
 }
 
@@ -100,7 +97,6 @@ docker_release() {
   for base_image in "${base_images[@]}" ; do
     alias="$(echo "$base_image" | cut -d= -f1)"
     for tag in $(base_image_tags "$base_image"); do
-      #run docker buildx imagetools create --tag $tag $image:${alias//:/-}-build
       run docker tag $image:${alias//:/-}-build $tag
       run docker push $tag
     done
