@@ -80,20 +80,10 @@ docker_install_pushrm() {
 base_image_tags() {
   alias="$(echo "$1" | cut -d= -f1)"
   base_image="$(echo "$1" | rev | cut -d= -f1 | rev)"
-  tags=()
-  if [[ "$version" != *-* ]]; then
-    tags=(latest)
+  echo $image:${alias//:/-}
+  if [[ "$version" != *-* && "$alias" == "$default_image" ]]; then
+    echo $image:latest
   fi
-  for tag in "${tags[@]}"; do
-    if [[ "$tag" == 'latest' ]]; then
-      echo $image:${alias//:/-}
-    else
-      echo $image:$tag-${alias//:/-}
-    fi
-    if [[ "$alias" == "$default_image" ]]; then
-      echo $image:$tag;
-    fi
-  done
 }
 
 docker_release() {
