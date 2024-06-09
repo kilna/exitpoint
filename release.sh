@@ -2,7 +2,7 @@
 
 export image='kilna/exitpoint'
 export short_desc='A container to run an exitpoint.sh script upon termination'
-export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
+export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7,linux/riscv64'
 export base_images=(busybox=busybox:uclibc alpine)
 export default_image=alpine
 export builder=exitpoint

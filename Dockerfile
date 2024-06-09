@@ -14,7 +14,7 @@ COPY --from=install /install /
 
 # tini makes sure signal handling is good, -g makes sure subprocesses inherit
 # parent process signals
-ENTRYPOINT [ "/sbin/tini", "-g", "--", "/bin/sh", "/exitpoint-entrypoint.sh" ]
+ENTRYPOINT [ "/sbin/tini", "-g", "--", "/exitpoint-entrypoint.sh" ]
 
 # Set to a valid script if you want to run your own entrypoint in a
 # derived container; /exitpoint-entrypoint.sh will in turn call this entrypoint
