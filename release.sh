@@ -42,12 +42,10 @@ check_git_status() {
 
 build() {
   for base_image in "${base_images[@]}"; do
-    alias="$(echo "$base_image" | cut -d= -f1)"
-    base_image="$(echo "$base_image" | rev | cut -d= -f1 | rev)"
-    build_tag=$image:${alias//:/-}-build
-    docker buildx create --name $builder --bootstrap --use || true
-    run docker build . -t $build_tag --build-arg base_image=$base_image \
-      --progress plain --platform $platforms --builder $builder
+    build_tag=$image:${base_image//:/-}-build
+    run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
+      --progress plain --platform $platforms --push
+    run docker pull $build_tag
   done
 }
 
@@ -103,8 +101,8 @@ docker_release() {
   for base_image in "${base_images[@]}" ; do
     alias="$(echo "$base_image" | cut -d= -f1)"
     for tag in $(base_image_tags "$base_image"); do
-      run docker tag $image:${alias//:/-}-build $tag
-      run docker push $tag
+      run docker buildx imagetools create --tag $tag \
+        $image:${base_image//:/-}-build
     done
   done
   if [[ "$version" != *-* ]]; then
