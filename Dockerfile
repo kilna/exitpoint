@@ -1,14 +1,20 @@
-ARG base_image=busybox:latest
+ARG base_image=alpine
+
+FROM alpine AS install
+
+ARG base_image
+
+COPY *.sh /
+
+RUN . /install.sh ${base_image}
 
 FROM ${base_image}
 
-COPY exitpoint.sh /
+COPY --from=install /install /
 
-COPY exitpoint-entrypoint.sh /
-
-RUN chmod +x /exitpoint*.sh
-
-ENTRYPOINT [ "/exitpoint-entrypoint.sh" ]
+# tini makes sure signal handling is good, -g makes sure subprocesses inherit
+# parent process signals
+ENTRYPOINT [ "/sbin/tini", "-g", "--", "/bin/sh", "/exitpoint-entrypoint.sh" ]
 
 # Set to a valid script if you want to run your own entrypoint in a
 # derived container; /exitpoint-entrypoint.sh will in turn call this entrypoint

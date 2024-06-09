@@ -6,7 +6,8 @@ set -u -e
 export EXITPOINT="${EXITPOINT:-/exitpoint.sh}"
 
 exitpoint() {
-  echo "$EXITPOINT triggered on signal $1" >&2
+  export SIGNAL="$1"
+  echo "$EXITPOINT triggered on signal $SIGNAL" >&2
   exec 3<&- || true; # Close fifo
   [ "${tmpdir:-}" != "" ] && rm -rf $tmpdir || true # Cleanup temp dir
   exec "$EXITPOINT"
