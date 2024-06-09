@@ -22,9 +22,9 @@ see the example Dockerfiles.
 
 ### Examples
 
-* [Run nothing on start, exitpoint script on termination](examples/exit-only).
-* [Synchronous (not backgrounded) command on start, with exitpoint](examples/synchronous).
-* [Backgrounded start process, with exitpoint](examples/background).
+* [Run nothing on start, exitpoint script on termination](https://github.com/kilna/exitpoint/tree/main/examples/exit-only)
+* [Synchronous (not backgrounded) command on start, with exitpoint](https://github.com/kilna/exitpoint/tree/main/examples/synchronous)
+* [Backgrounded start process, with exitpoint](https://github.com/kilna/exitpoint/tree/main/examples/background)
 
 ### Dockerfile ENV Variables
 
