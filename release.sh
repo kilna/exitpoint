@@ -4,7 +4,7 @@ export image='kilna/exitpoint'
 export short_desc='A container to run an exitpoint.sh script upon termination'
 export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
 export base_images=(busybox=busybox:uclibc alpine)
-export default_image=busybox
+export main=busybox
 export builder=exitpoint
 export ver_regex='v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?'
 export git_branch=$(git branch | grep -F '*' | cut -f2- -d' ')
@@ -77,27 +77,17 @@ docker_install_pushrm() {
   chmod +x ~/.docker/cli-plugins/docker-pushrm
 }
 
-base_image_tags() {
-  alias="$(echo "$1" | cut -d= -f1)"
-  base_image="$(echo "$1" | rev | cut -d= -f1 | rev)"
-  echo $image:${alias//:/-}
-  if [[ "$version" != *-* && "$alias" == "$default_image" ]]; then
-    echo $image:latest
-  fi
-}
-
 docker_release() {
   check_version
   build
   docker_install_pushrm
   for base_image in "${base_images[@]}" ; do
     alias="$(echo "$base_image" | cut -d= -f1)"
-    for tag in $(base_image_tags "$base_image"); do
-      run docker buildx imagetools create --tag $tag \
-        $image:$(echo "$version" | sed -e 's/^v//')-${alias//:/-}
-    done
+    run docker buildx imagetools create --tag $image:${alias//:/-} \
+      $image:$(echo "$version" | sed -e 's/^v//')-${alias//:/-}
   done
   if [[ "$version" != *-* ]]; then
+    run docker buildx imagetools create --tag $image:latest $image:$main
     run docker pushrm $image:latest --short "$short_desc"
   fi
 }
