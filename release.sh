@@ -4,7 +4,7 @@ export image='kilna/exitpoint'
 export short_desc='A container to run an exitpoint.sh script upon termination'
 export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
 export base_images=(busybox=busybox:uclibc alpine)
-export default_image=alpine
+export default_image=busybox
 export builder=exitpoint
 export ver_regex='v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?'
 export git_branch=$(git branch | grep -F '*' | cut -f2- -d' ')
@@ -90,7 +90,7 @@ base_image_tags() {
     else
       echo $image:$tag-${alias//:/-}
     fi
-    if [[ "$base_image" == "$default_image" ]]; then
+    if [[ "$alias" == "$default_image" ]]; then
       echo $image:$tag;
     fi
   done
