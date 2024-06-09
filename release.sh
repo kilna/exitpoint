@@ -5,6 +5,7 @@ export short_desc='A container to run an exitpoint.sh script upon termination'
 export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
 export base_images=(busybox=busybox:uclibc alpine)
 export default_image=alpine
+export builder=exitpoint
 export ver_regex='v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?'
 export git_branch=$(git branch | grep -F '*' | cut -f2- -d' ')
 
@@ -46,8 +47,9 @@ build() {
     build_tag=$image:${alias//:/-}-build
     #run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
     #  --progress plain --platform $platforms --push
+    docker buildx create --name $builder --bootstrap --use || true
     run docker build . -t $build_tag --build-arg base_image=$base_image \
-      --progress plain --platform $platforms
+      --progress plain --platform $platforms --builder $builder
     #run docker pull $build_tag
   done
 }
