@@ -4,7 +4,7 @@ FROM alpine AS install
 
 ARG base_image
 
-COPY *.sh /
+COPY exitpoint*.sh install.sh /
 
 RUN . /install.sh ${base_image}
 
