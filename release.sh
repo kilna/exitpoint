@@ -3,7 +3,7 @@
 export image='kilna/exitpoint'
 export short_desc='A container to run an exitpoint.sh script upon termination'
 export platforms='linux/amd64,linux/386,linux/arm64,linux/arm/v6,linux/arm/v7'
-export base_images=(busybox:musl busybox:glibc busybox:uclibc busybox alpine)
+export base_images=(busybox=busybox:uclibc alpine)
 export default_image=alpine
 export ver_regex='v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?'
 export git_branch=$(git branch | grep -F '*' | cut -f2- -d' ')
@@ -41,10 +41,14 @@ check_git_status() {
 
 build() {
   for base_image in "${base_images[@]}"; do
-    build_tag=$image:${base_image//:/-}-build
-    run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
-      --progress plain --platform $platforms --push
-    run docker pull $build_tag
+    alias="$(echo "$base_image" | cut -d= -f1)"
+    base_image="$(echo "$base_image" | rev | cut -d= -f1 | rev)"
+    build_tag=$image:${alias//:/-}-build
+    #run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
+    #  --progress plain --platform $platforms --push
+    run docker build . -t $build_tag --build-arg base_image=$base_image \
+      --progress plain --platform $platforms
+    #run docker pull $build_tag
   done
 }
 
@@ -75,13 +79,14 @@ docker_install_pushrm() {
 }
 
 base_image_tags() {
-  base_image="$1"
-  tags=(edge $(echo "$version" | sed -e 's/^v//'))
+  alias="$(echo "$1" | cut -d= -f1)"
+  base_image="$(echo "$1" | rev | cut -d= -f1 | rev)"
+  tags=( $(echo "$version" | sed -e 's/^v//') )
   if [[ "$version" != *-* ]]; then
     tags=("${tags[@]}" latest)
   fi
   for tag in "${tags[@]}"; do
-    echo $image:$tag-${base_image//:/-}
+    echo $image:$tag-${alias//:/-}
     if [[ "$base_image" == "$default_image" ]]; then echo $image:$tag; fi
   done
 }
@@ -91,9 +96,11 @@ docker_release() {
   build
   docker_install_pushrm
   for base_image in "${base_images[@]}" ; do
+    alias="$(echo "$base_image" | cut -d= -f1)"
     for tag in $(base_image_tags "$base_image"); do
-      run docker buildx imagetools create --tag $tag \
-        $image:${base_image//:/-}-build
+      #run docker buildx imagetools create --tag $tag $image:${alias//:/-}-build
+      run docker tag $image:${alias//:/-}-build $tag
+      run docker push $tag
     done
   done
   if [[ "$version" != *-* ]]; then
