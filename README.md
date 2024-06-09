@@ -13,35 +13,36 @@
 [![GitHub watchers](https://img.shields.io/github/watchers/kilna/exitpoint?style=social)](https://github.com/kilna/exitpoint/watchers)
 [![GitHub Repo stars](https://img.shields.io/github/stars/kilna/exitpoint?style=social)](https://github.com/kilna/exitpoint/stargazers)
 
-A docker image that runs /exitpoint.sh (or another path) when terminated.
+A docker image that runs an exitpoint.sh script when terminated.
 
 ## Usage
 
 This image is meant primarily to be a base image that will be derived from,
-an example Dockerfile.
+see the example Dockerfiles.
 
 ### Examples
 
-For an example of running nothing on start, and exitpoint script on termination
-see [examples/exit-only](examples/exit-only).
+* [Run nothing on start, exitpoint script on termination](examples/exit-only).
+* [Synchronous (not backgrounded) command on start, with exitpoint](examples/synchronous).
+* [Backgrounded start process, with exitpoint](examples/background).
 
-For an example of a synchronous (not backgrounded) command run on start, with
-an exitpoint script see [examples/synchronous](examples/synchronous).
+### Dockerfile ENV Variables
 
-For an example of a daemon-like backgrounded process for which we care about
-the exit, see [examples/wait](examples/wait).
-
-For an example of a backgrounded process that we don't care about the exit,
-see [examples/background](examples/background).
-
-### Variables
+These should be set by `ENV` statements in your derived container's Dockerfile.
 
 * `EXITPOINT` - Sets the path of the exitpoint script. Defaults to
   `/exitpoint.sh`.
-* `ENTRYPOINT` - An optional entrypoint script to run by the base image's
+* `ENTRYPOINT` - An optional entrypoint script to run by this base image's
    entrypoint script `/exitpoint-entrypoint.sh`.
-* `CMD_EXIT` - Is available to the exitpoint script, and contains the exit code
-  as returned from the entrypoint + docker CMD.
+
+### Exit Point variables
+
+These are environment variables that are available to your exitpoint script
+
+* `CMD_EXIT` - Contains the exit code as returned from the entrypoint + docker
+   CMD.
+* `SIGNAL` - Contains the name of the signal received that caused it to be
+   called.
 
 ## Author
 
