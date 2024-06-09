@@ -42,7 +42,9 @@ check_git_status() {
 
 build() {
   for base_image in "${base_images[@]}"; do
-    build_tag=$image:${base_image//:/-}-build
+    alias="$(echo "$base_image" | cut -d= -f1)"
+    base_image="$(echo "$base_image" | rev | cut -d= -f1 | rev)"
+    build_tag=$image:$(echo "$version" | sed -e 's/^v//')-${alias//:/-}
     run docker buildx build . -t $build_tag --build-arg base_image=$base_image \
       --progress plain --platform $platforms --push
     run docker pull $build_tag
@@ -78,9 +80,9 @@ docker_install_pushrm() {
 base_image_tags() {
   alias="$(echo "$1" | cut -d= -f1)"
   base_image="$(echo "$1" | rev | cut -d= -f1 | rev)"
-  tags=( $(echo "$version" | sed -e 's/^v//') )
+  tags=()
   if [[ "$version" != *-* ]]; then
-    tags=("${tags[@]}" latest)
+    tags=(latest)
   fi
   for tag in "${tags[@]}"; do
     if [[ "$tag" == 'latest' ]]; then
@@ -101,7 +103,8 @@ docker_release() {
   for base_image in "${base_images[@]}" ; do
     alias="$(echo "$base_image" | cut -d= -f1)"
     for tag in $(base_image_tags "$base_image"); do
-      run docker buildx imagetools create --tag $tag $image:${alias//:/-}-build
+      run docker buildx imagetools create --tag $tag \
+        $image:$(echo "$version" | sed -e 's/^v//')-${alias//:/-}
     done
   done
   if [[ "$version" != *-* ]]; then
