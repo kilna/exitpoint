@@ -85,8 +85,14 @@ base_image_tags() {
     tags=("${tags[@]}" latest)
   fi
   for tag in "${tags[@]}"; do
-    echo $image:$tag-${alias//:/-}
-    if [[ "$base_image" == "$default_image" ]]; then echo $image:$tag; fi
+    if [[ "$tag" == 'latest' ]]; then
+      echo $image:${alias//:/-}
+    else
+      echo $image:$tag-${alias//:/-}
+    fi
+    if [[ "$base_image" == "$default_image" ]]; then
+      echo $image:$tag;
+    fi
   done
 }
 
