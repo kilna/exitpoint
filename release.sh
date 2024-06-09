@@ -101,8 +101,7 @@ docker_release() {
   for base_image in "${base_images[@]}" ; do
     alias="$(echo "$base_image" | cut -d= -f1)"
     for tag in $(base_image_tags "$base_image"); do
-      run docker buildx imagetools create --tag $tag \
-        $image:${base_image//:/-}-build
+      run docker buildx imagetools create --tag $tag $image:${alias//:/-}-build
     done
   done
   if [[ "$version" != *-* ]]; then
