@@ -3,8 +3,6 @@
 set -e -u -x
 
 BASE_IMAGE="$1"
-TINI_VERSION=0.19.0 # Onlys used for non-alpine / non-busybox-musl
-TINI_BASE=https://github.com/krallin/tini/releases/download/
 
 mkdir -v /install
 mkdir -v /install/sbin
@@ -20,8 +18,13 @@ case "$BASE_IMAGE" in
     ;;
   busybox*)
     # Get the statically compiled version of tini
-    apk add dpkg
+    apk add dpkg jq
     arch="$(dpkg --print-architecture | rev | cut -d- -f1 | rev)"
+    TINI_VERSION="$(
+      curl -sL http://api.github.com/repos/krallin/tini/git/refs/tags \
+        jq -crM '.[].ref' | sed -e 's|refs/tags/||' | sort -V | tail -1
+    )"
+    TINI_BASE=https://github.com/krallin/tini/releases/download/
     cd /install/sbin
     wget "$TINI_BASE/v$TINI_VERSION/tini-static-muslc-$arch" -O tini \
       || wget "$TINI_BASE/v$TINI_VERSION/tini-static-$arch" -O tini
