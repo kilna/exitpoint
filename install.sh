@@ -22,7 +22,7 @@ case "$BASE_IMAGE" in
     arch="$(dpkg --print-architecture | rev | cut -d- -f1 | rev)"
     TINI_VERSION="$(
       wget -q -O- http://api.github.com/repos/krallin/tini/git/refs/tags \
-        jq -crM '.[].ref' | sed -e 's|refs/tags/||' | sort -V | tail -1
+        | jq -crM '.[].ref' | sed -e 's|refs/tags/||' | sort -V | tail -1
     )"
     TINI_BASE=https://github.com/krallin/tini/releases/download
     cd /install/sbin
