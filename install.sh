@@ -18,10 +18,10 @@ case "$BASE_IMAGE" in
     ;;
   busybox*)
     # Get the statically compiled version of tini
-    apk add dpkg jq curl
+    apk add dpkg jq
     arch="$(dpkg --print-architecture | rev | cut -d- -f1 | rev)"
     TINI_VERSION="$(
-      curl -sL http://api.github.com/repos/krallin/tini/git/refs/tags \
+      wget -q -O- http://api.github.com/repos/krallin/tini/git/refs/tags \
         jq -crM '.[].ref' | sed -e 's|refs/tags/||' | sort -V | tail -1
     )"
     TINI_BASE=https://github.com/krallin/tini/releases/download
