@@ -26,8 +26,8 @@ case "$BASE_IMAGE" in
     )"
     TINI_BASE=https://github.com/krallin/tini/releases/download/
     cd /install/sbin
-    wget "$TINI_BASE/v$TINI_VERSION/tini-static-muslc-$arch" -O tini \
-      || wget "$TINI_BASE/v$TINI_VERSION/tini-static-$arch" -O tini
+    wget "$TINI_BASE/$TINI_VERSION/tini-static-muslc-$arch" -O tini \
+      || wget "$TINI_BASE/$TINI_VERSION/tini-static-$arch" -O tini
     chmod +x tini
     ;;
   *)
