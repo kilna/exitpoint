@@ -2,4 +2,9 @@ v1.0.0:
   date: 2024-06-05
   description: |
     Initial Release
-
+v1.0.1:
+  date: 2024-11-08
+  description: |
+    Updated:
+    * alpine to 3.20.3 (2024-09-25)
+    * busybox to 1.37.0 (2024-10-21)
